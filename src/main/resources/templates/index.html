@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!-- use this url to yingru table of th  引入th -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html" charset="UTF-8" />
+    <title>Title</title>
+    <link th:href="@{css/bootstrap.min.css}" rel="stylesheet" />
+    <!-- 使用这个来引入静态资源-->
+    <link th:href="@{css/bootstrap-theme.min.css}" rel="stylesheet" />
+</head>
+<body>
+<h1>主页</h1>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">访问model</h3>
+    </div>
+    <div class="panel-body">
+        <!-- 引入model的值-->
+        <span th:text="${email.name}"></span>
+    </div>
+</div>
+
+
+</body>
+</html>

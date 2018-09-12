@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body onload="disconnect()">
+<noscript>浏览器不支持websocked</noscript>
+<div>
+    <div>
+        <button id="connect" onclick="connect()">connect</button>
+        <button id="disconnect" disabled="disabled" onclick="disconnect()" >disconnect</button>
+    </div>
+    <div id="conversationDiv">
+        <label>name:</label>
+        <input type="text" id="name" />
+        <button onclick="sendName()">send</button>
+        <p id="response"></p>
+    </div>
+</div>
+</body>
+<!--支持wesocked的几个包-->
+<script th:src="@{js/jquery-3.1.0.min.js}"></script>
+<script th:src="@{js/stomp.min.js}"></script>
+<script th:src="@{js/sockjs.min.js}"></script>
+<script>
+    var stomClient = null;
+    function setConnected(connected) {
+        document.getElementById("connect").disabled = connected;
+        document.getElementById("disconnect").disabled = !connected;
+        document.getElementById("conversationDiv").style.visibility = connected ?"visible":"hidden";
+        $('#response').html();
+    }
+
+    function connect() {
+        var socked = new SockJS("/endpointWisely");//制定连接的名称，必须与后台一致
+        stomClient = Stomp.over(socked);//使用stomp协议
+        stomClient.connect({},function (frame) {//开始连接服务
+            setConnected(true);//
+            console.log(frame);
+            stomClient.subscribe('/topic/getResponse',function (response) {//订阅后台/topic/getResponse 发送的消息由Sendto定义,//广播式的
+                console.log("response:"+response);
+                showResponse(JSON.parse(response.body).responseMessage);
+            })
+
+        })
+    }
+
+    function disconnect() {
+        if(stomClient != null){
+            stomClient.disconnect();
+        }
+        setConnected(false);
+        console.log("disconnect");
+    }
+
+    function sendName() {
+        var name = $("#name").val();
+        stomClient.send("/web",{},JSON.stringify({'name':name}));
+    }
+
+    function showResponse(message) {
+        var response = $('#response');
+        response.html(message);
+    }
+
+</script>
+</html>

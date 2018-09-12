@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<!--支持wesocked的几个包-->
+<script th:src="@{js/jquery-3.1.0.min.js}"></script>
+<script th:src="@{js/stomp.min.js}"></script>
+<script th:src="@{js/sockjs.min.js}"></script>
+<body>
+<form id="wiselyForm">
+    <textarea rows="4" cols="60" name="text"></textarea>
+    <input type="submit"/>
+</form>
+<script th:inline="javascript">
+    $("#wiselyForm").submit(function (e) {
+        e.preventDefault();
+        var txt = $("#wiselyForm").find('textarea[name="text"]').val();
+        sendSplittle(txt);
+    });
+
+    var sock = new SockJS("/endpointChat");
+    var stomp = Stomp.over(sock);
+    stomp.connect("guest","guest",function (frame) {
+        stomp.subscribe("/user/queue/notification",handleNotification);//订阅此地址的消息 user 面对点对点的发送
+    })
+    function handleNotification(msg) {//处理消息
+        console.log("得到消息："+msg);
+        $("#output").append('<b>'+msg.body+'</b><br/>');
+    }
+    function sendSplittle(text) {
+        stomp.send("/chat",{},text);
+    }
+    $("#stop").click(function () {
+        sock.close();
+    })
+</script>
+<div id="output"></div>
+</body>
+</html>
