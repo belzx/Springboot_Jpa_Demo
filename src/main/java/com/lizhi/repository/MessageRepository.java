@@ -1,6 +1,7 @@
 package com.lizhi.repository;
 
 import com.lizhi.bean.Message;
+import com.lizhi.custom.config.CustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,16 +10,18 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.transaction.Transactional;
+import java.util.Iterator;
 import java.util.List;
 
 @Repository
-public interface MessageRepository extends JpaRepository<Message, String>
+public interface MessageRepository extends CustomRepository<Message,String>
 {
     /**
      * 1： jpa 可以自动化根据方法名称查询 结果
      *
      */
     Message findOneById(Integer id);
+
     Message deleteById(Integer id);
 
     List<Message> findFirst10ByNickNameLike(String nickName); //属性的名称必须与bean中的保持一致

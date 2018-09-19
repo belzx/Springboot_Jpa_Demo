@@ -40,9 +40,8 @@ public class MessageCacheService {
 
     @Cacheable(value = "message",key = "'#id'")
     public void find(int id){
-
         Message one = messageRepository.findOneById(id);
-        System.out.println("为"+one.getIp()+"做出了缓存");
+        System.out.println("为"+one+"做出了缓存");
     }
 
     //redis 乱码

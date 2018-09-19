@@ -16,6 +16,8 @@ import java.io.Serializable;
 @NoRepositoryBean
 public interface CustomRepository <T , ID extends Serializable> extends JpaRepository<T,ID>,JpaSpecificationExecutor<T> {
 
+    /*
+    自动like
+     */
     Page<T> findByAuto(T example,Pageable pageable);
-
 }
